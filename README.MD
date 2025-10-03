@@ -13,8 +13,8 @@ This repository contains a **full-stack Authentication-as-a-Service (AAS)** proj
 ## **Project Structure**
 
 my-app/
-├─ backend/ # Laravel 12 backend
-├─ frontend/ # React 19 frontend
+├─ jwt-auth-api/ # Laravel 12 backend
+├─ react-auth-app/ # React 19 frontend
 ├─ .gitignore
 └─ README.md
 
@@ -62,7 +62,7 @@ my-app/
 ### Backend Setup
 
 ```bash
-cd backend
+cd jwt-auth-api
 composer install
 cp .env.example .env
 php artisan key:generate
