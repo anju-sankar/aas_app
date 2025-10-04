@@ -51,11 +51,9 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className="flex">
       <DashboardLayout>
           <Widgets stats={stats} />
           <AnalyticsChart data={chartData} />
-      </DashboardLayout > 
-    </div>
+      </DashboardLayout >
   );
 }
