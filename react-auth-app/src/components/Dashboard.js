@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import Sidebar from "./Sidebar";
-import Topbar from "./Topbar";
+import DashboardLayout from "./DashboardLayout";
 import Widgets from "./Widgets";
 import AnalyticsChart from "./AnalyticsChart";
 
@@ -14,17 +13,6 @@ export default function Dashboard() {
     // Fetch stats
     const fetchData = async () => {
       try {
-        const statsRes = await axios.get("http://localhost:8000/api/stats"); // dummy endpoint
-        setStats(statsRes.data);
-
-        const chartRes = await axios.get("http://localhost:8000/api/analytics"); // dummy
-        setChartData(chartRes.data);
-
-        const usersRes = await axios.get("http://localhost:8000/api/users"); // dummy
-        setUsers(usersRes.data);
-      } catch (err) {
-        console.error(err);
-        // fallback dummy data
         setStats([
           { title: "Users", value: 120 },
           { title: "Active Sessions", value: 45 },
@@ -44,6 +32,18 @@ export default function Dashboard() {
           { id: 1, name: "John Doe", email: "john@example.com", role: "admin" },
           { id: 2, name: "Jane Smith", email: "jane@example.com", role: "user" },
         ]);
+        // const statsRes = await axios.get("http://localhost:8000/api/stats"); // dummy endpoint
+        // setStats(statsRes.data);
+
+        // const chartRes = await axios.get("http://localhost:8000/api/analytics"); // dummy
+        // setChartData(chartRes.data);
+
+        // const usersRes = await axios.get("http://localhost:8000/api/users"); // dummy
+        // setUsers(usersRes.data);
+      } catch (err) {
+        console.error(err);
+        // fallback dummy data
+        
       }
     };
 
@@ -52,14 +52,10 @@ export default function Dashboard() {
 
   return (
     <div className="flex">
-      <Sidebar />
-      <div className="flex-1 bg-gray-100 min-h-screen">
-        <Topbar />
-        <div className="p-6">
+      <DashboardLayout>
           <Widgets stats={stats} />
           <AnalyticsChart data={chartData} />
-        </div>
-      </div>
+      </DashboardLayout > 
     </div>
   );
 }

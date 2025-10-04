@@ -1,38 +1,41 @@
 import { createContext, useState, useEffect } from "react";
-import api from '../api';
+import api from "../api";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
- useEffect(() => {
-  const token = localStorage.getItem("token");
-  const savedUser = localStorage.getItem("user");
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const savedUser = localStorage.getItem("user");
 
-  if (token && savedUser && savedUser !== "undefined") {
-    try {
-      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      setUser(JSON.parse(savedUser));
-    } catch (err) {
-      console.error("Failed to parse saved user:", err);
-      localStorage.removeItem("user"); // clear bad data
+    if (token && savedUser && savedUser !== "undefined") {
+      try {
+        api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        setUser(JSON.parse(savedUser));
+      } catch (err) {
+        console.error("Failed to parse saved user:", err);
+        localStorage.removeItem("user"); // clear bad data
+      }
     }
-  }
-}, []);
-
+  }, []);
 
   const login = async (email, password) => {
     try {
-      const res = await api.post("/login", {
-        email,
-        password,
-      });
+      const res = await api.post("/login", { email, password });
+
+      const userWithRoles = {
+        ...res.data.user,
+        roles: res.data.roles || [], // add roles array
+      };
+
       localStorage.setItem("token", res.data.access_token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-      api.defaults.headers.common["Authorization"] =
-        `Bearer ${res.data.access_token}`;
-      setUser(res.data.user);
+      localStorage.setItem("user", JSON.stringify(userWithRoles));
+
+      api.defaults.headers.common["Authorization"] = `Bearer ${res.data.access_token}`;
+      setUser(userWithRoles);
+
       return { success: true };
     } catch (err) {
       return {
@@ -48,9 +51,22 @@ export const AuthProvider = ({ children }) => {
         name,
         email,
         password,
-        password_confirmation: passwordConfirmation
+        password_confirmation: passwordConfirmation,
       });
-      return await login(email, password);
+
+      // Backend returns roles as well
+      const userWithRoles = {
+        ...res.data.user,
+        roles: res.data.roles || [],
+      };
+
+      localStorage.setItem("user", JSON.stringify(userWithRoles));
+      localStorage.setItem("token", res.data.access_token);
+
+      api.defaults.headers.common["Authorization"] = `Bearer ${res.data.access_token}`;
+      setUser(userWithRoles);
+
+      return { success: true };
     } catch (err) {
       return {
         success: false,
