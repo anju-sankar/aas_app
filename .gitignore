@@ -4,6 +4,7 @@
 
 /jwt-auth-api/vendor/
 /jwt-auth-api/.env
+/jwt-auth-api/.env.prod
 /jwt-auth-api/.env.*.backup
 /jwt-auth-api/.idea/
 /jwt-auth-api/.vscode/
@@ -33,7 +34,7 @@
 /react-auth-app/.env.local
 /react-auth-app/.env.development
 /react-auth-app/.env.test
-/react-auth-app/.env.production
+/react-auth-app/.env.prod
 /react-auth-app/.cache/
 /react-auth-app/.parcel-cache/
 /react-auth-app/dist/
