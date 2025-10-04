@@ -27,15 +27,17 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        // Optionally assign a default role, e.g. “user”
+        // Assign default role "user"
         $user->assignRole('user');
+
+        // Load roles for frontend
+        $user->load('roles');
 
         return response()->json([
             'user' => $user,
+            'roles' => $user->getRoleNames(), // ['user'] or ['admin']
             'message' => 'User registered successfully'
         ], 200);
-
-        
     }
 
     public function login(Request $request)
@@ -47,17 +49,27 @@ class AuthController extends Controller
         if (!$token = auth('api')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
+
+        // Load roles for frontend
+        $user->load('roles');
+
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
+            'expires_in' => auth('api')->factory()->getTTL() * 60,
             'user' => $user,
-            'expires_in' => auth('api')->factory()->getTTL() * 60
-        ],200);
+            'roles' => $user->getRoleNames(), // send role names to frontend
+        ], 200);
     }
 
     public function me()
     {
-        return response()->json(auth('api')->user());
+        $user = auth('api')->user();
+        $user->load('roles');
+        return response()->json([
+            'user' => $user,
+            'roles' => $user->getRoleNames(),
+        ]);
     }
 
     public function logout()
@@ -70,13 +82,44 @@ class AuthController extends Controller
     {
         return $this->respondWithToken(auth('api')->refresh());
     }
+    
+    
+    /**
+     * List all users (Admin only)
+     */
+    public function listUsers()
+    {
+        $currentUserId = auth('api')->id(); // get the current logged-in user ID
+
+        $users = User::where('id', '!=', $currentUserId) // exclude current user
+        ->with('roles') // eager load roles
+        ->get(); // eager load roles
+
+        // Format roles as array of names
+        $users = $users->map(function ($user) {
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'roles' => $user->getRoleNames(), // returns ['admin'] or ['user']
+            ];
+        });
+
+        return response()->json($users);
+    }
+
 
     protected function respondWithToken($token)
     {
+        $user = auth('api')->user();
+        $user->load('roles');
+
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth('api')->factory()->getTTL() * 60
-        ],200);
+            'expires_in' => auth('api')->factory()->getTTL() * 60,
+            'user' => $user,
+            'roles' => $user->getRoleNames(),
+        ], 200);
     }
 }
