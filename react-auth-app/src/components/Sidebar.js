@@ -7,7 +7,6 @@ export default function Sidebar() {
       <nav className="flex flex-col gap-3">
         <Link to="/dashboard" className="hover:bg-gray-700 p-2 rounded">Home</Link>
         <Link to="/dashboard/analytics" className="hover:bg-gray-700 p-2 rounded">Analytics</Link>
-        <Link to="/dashboard/users" className="hover:bg-gray-700 p-2 rounded">Users</Link>
         <Link to="/dashboard/settings" className="hover:bg-gray-700 p-2 rounded">Settings</Link>
       </nav>
     </div>
