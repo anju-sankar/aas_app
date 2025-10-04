@@ -1,0 +1,56 @@
+# =========================
+# Laravel (backend) ignores
+# =========================
+
+/jwt-auth-api/vendor/
+/jwt-auth-api/.env
+/jwt-auth-api/.env.*.backup
+/jwt-auth-api/.idea/
+/jwt-auth-api/.vscode/
+/jwt-auth-api/storage/*.key
+/jwt-auth-api/jwt-auth-api//storage/debugbar
+/jwt-auth-api/storage/framework/cache/data/*
+/jwt-auth-api/storage/framework/sessions/*
+/jwt-auth-api/storage/framework/views/*
+/jwt-auth-api/storage/logs/*
+/jwt-auth-api/public/storage
+/jwt-auth-api/Homestead.yaml
+/jwt-auth-api/Homestead.json
+/jwt-auth-api/.phpunit.result.cache
+/jwt-auth-api/.phpunit.cache
+/jwt-auth-api/.env.backup
+/jwt-auth-api/*.log
+/jwt-auth-api/*.sqlite
+/jwt-auth-api/.DS_Store
+
+# =========================
+# React (frontend) ignores
+# =========================
+
+/react-auth-app/node_modules/
+/react-auth-app/build/
+/react-auth-app/.env
+/react-auth-app/.env.local
+/react-auth-app/.env.development
+/react-auth-app/.env.test
+/react-auth-app/.env.production
+/react-auth-app/.cache/
+/react-auth-app/.parcel-cache/
+/react-auth-app/dist/
+/react-auth-app/.DS_Store
+
+# =========================
+# General / OS
+# =========================
+
+*.swp
+*.swo
+*.bak
+*.tmp
+Thumbs.db
+.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
