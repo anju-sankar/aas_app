@@ -8,7 +8,6 @@ export default function Sidebar() {
   // Define sidebar links
   const links = [
     { name: "Home", to: "/dashboard" },
-    { name: "Analytics", to: "/dashboard/analytics" },
   ];
 
   // Admin-only links
