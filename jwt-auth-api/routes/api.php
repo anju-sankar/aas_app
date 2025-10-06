@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SocialAuthController;
+use App\Http\Controllers\AnalyticsController;
 
 Route::prefix('auth')->group(function () {
     // Specific routes first
@@ -11,6 +12,7 @@ Route::prefix('auth')->group(function () {
     Route::get('users', [AuthController::class, 'listUsers']);
     Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:api');
     Route::get('me', [AuthController::class, 'me'])->middleware('auth:api');
+    Route::get('/analytics/visits', [AnalyticsController::class, 'visits'])->middleware('auth:api');
 
     // Wildcard provider routes LAST
     Route::get('{provider}', [SocialAuthController::class, 'redirectToProvider']);

@@ -82,13 +82,6 @@ export default function LoginForm() {
           >
             Continue with GitHub
           </button>
-          <button
-            type="button"
-            onClick={() => handleSocialLogin("facebook")}
-            className="w-full bg-blue-700 text-white p-2 rounded hover:bg-blue-800"
-          >
-            Continue with Facebook
-          </button>
         </div>
       </form>
     </div>
