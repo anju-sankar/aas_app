@@ -33,8 +33,12 @@ class AuthController extends Controller
         // Load roles for frontend
         $user->load('roles');
 
+        // Issue JWT token immediately
+        $token = auth('api')->login($user); // Use your JWT guard
+
         return response()->json([
             'user' => $user,
+            'access_token' => $token,
             'roles' => $user->getRoleNames(), // ['user'] or ['admin']
             'message' => 'User registered successfully'
         ], 200);

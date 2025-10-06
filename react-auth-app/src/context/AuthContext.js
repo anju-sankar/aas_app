@@ -82,8 +82,29 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const fetchUser = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return null;
+
+    try {
+      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      const res = await api.get("me"); // make sure your Laravel route /api/user exists
+      const userWithRoles = {
+        ...res.data.user,
+        roles: res.data.roles || [],
+      };
+      localStorage.setItem("user", JSON.stringify(userWithRoles));
+      setUser(userWithRoles);
+      return userWithRoles;
+    } catch (err) {
+      console.error("fetchUser failed:", err.response?.data || err.message);
+      logout();
+      return null;
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, login, register, logout, fetchUser }}>
       {children}
     </AuthContext.Provider>
   );

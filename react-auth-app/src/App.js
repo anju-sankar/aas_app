@@ -4,6 +4,7 @@ import RegisterForm from "./components/RegisterForm";
 import Dashboard from "./components/Dashboard";
 import DashboardLayout from "./components/DashboardLayout";
 import UsersList from "./components/UsersList"; // import your new component
+import OAuthSuccess from "./components/OAuthSuccess";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
@@ -16,7 +17,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
-
+        <Route path="/oauth-success" element={<OAuthSuccess />} />
         {/* Dashboard main route */}
         <Route
           path="/dashboard"
