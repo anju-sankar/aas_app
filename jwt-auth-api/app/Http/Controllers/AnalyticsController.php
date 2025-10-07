@@ -18,7 +18,7 @@ class AnalyticsController extends Controller
             ->orderBy('date');
 
         // Non-admins see only their own visits
-        if (!$user->hasRole('admin')) {
+        if (!$user->hasRole('tenant-admin')) {
             $query->where('user_id', $user->id);
         }
 

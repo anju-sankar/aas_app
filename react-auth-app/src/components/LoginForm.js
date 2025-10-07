@@ -17,8 +17,8 @@ export default function LoginForm() {
   };
 
   const handleSocialLogin = (provider) => {
-    // Redirect to your backend social login endpoint
-    window.location.href = `${process.env.REACT_APP_API_URL}/${provider}`;
+    const tenantDomain = window.location.hostname; // e.g., "tenant1.localhost:3000"
+    window.location.href = `${process.env.REACT_APP_WEB_URL}/${provider}?tenant_domain=${tenantDomain}`;
   };
 
   return (
