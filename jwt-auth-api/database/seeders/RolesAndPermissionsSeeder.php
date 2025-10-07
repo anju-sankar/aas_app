@@ -28,18 +28,18 @@ class RolesAndPermissionsSeeder extends Seeder
         // DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         // Create roles
-        Role::firstOrCreate(['name' => 'user', 'guard_name' => 'web']);
-        Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+        Role::firstOrCreate(['name' => 'tenant-user', 'guard_name' => 'web']);
+        Role::firstOrCreate(['name' => 'tenant-admin', 'guard_name' => 'web']);
 
         // Example permissions (optional)
         Permission::firstOrCreate(['name' => 'view dashboard', 'guard_name' => 'web']);
         Permission::firstOrCreate(['name' => 'manage users', 'guard_name' => 'web']);
 
         // Assign permissions to roles
-        $adminRole = Role::where('name', 'admin')->first();
+        $adminRole = Role::where('name', 'tenant-admin')->first();
         $adminRole->givePermissionTo(['view dashboard', 'manage users']);
 
-        $userRole = Role::where('name', 'user')->first();
+        $userRole = Role::where('name', 'tenant-user')->first();
         $userRole->givePermissionTo(['view dashboard']);
 
 

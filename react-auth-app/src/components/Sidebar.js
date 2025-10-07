@@ -39,7 +39,7 @@ export default function Sidebar() {
           ))}
 
           {/* Render admin links only if user has admin role */}
-          {user?.roles?.includes("admin") &&
+          {user?.roles?.includes("tenant-admin") &&
             adminLinks.map((link) => (
               <NavLink
                 key={link.to}

@@ -17,6 +17,7 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
+        'tenant_id', // add tenant_id here for multi-tenancy
         // add other fields as needed
     ];
 
@@ -34,5 +35,10 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];  // you may add custom claims like roles etc
+    }
+
+    public function tenant()
+    {
+        return $this->belongsTo(Tenant::class);
     }
 }

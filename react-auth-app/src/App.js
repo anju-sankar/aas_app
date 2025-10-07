@@ -47,7 +47,7 @@ function App() {
           path="/dashboard/users"
           element={
             <ProtectedRoute>
-              {user?.roles?.includes("admin") ? (
+              {user?.roles?.includes("tenant-admin") ? (
                 <DashboardLayout>
                   <UsersList />
                 </DashboardLayout>

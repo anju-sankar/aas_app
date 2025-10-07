@@ -26,7 +26,7 @@ export default function AnalyticsChart() {
       })
       .then((res) => {
         // Format data for admin (group by date, multiple lines)
-        if (storedUser.role === "admin") {
+        if (storedUser.role === "tenant-admin") {
           const grouped = {};
           res.data.forEach((item) => {
             if (!grouped[item.date]) grouped[item.date] = {};
@@ -70,7 +70,7 @@ export default function AnalyticsChart() {
         <span role="img" aria-label="chart">📈</span> User Visits Analytics
       </h2>
       <p style={{ color: "#666", marginBottom: 16, fontSize: "0.95rem" }}>
-        {user?.role === "admin"
+        {user?.role === "tenant-admin"
           ? "Overview of user visits for all users in the last 7 days."
           : "Your visits in the last 7 days."}
       </p>
@@ -85,7 +85,7 @@ export default function AnalyticsChart() {
               labelStyle={{ fontWeight: 600 }}
             />
             <Legend wrapperStyle={{ paddingTop: 8 }} />
-            {user?.role === "admin"
+            {user?.role === "tenant-admin"
               ? Object.keys(data[0] || {})
                   .filter((key) => key !== "date")
                   .map((userId, idx) => (

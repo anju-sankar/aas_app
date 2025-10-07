@@ -4,13 +4,31 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Tenant;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
+    /**
+     * Register a new user (self-registration based on domain)
+     */
     public function register(Request $request)
     {
+        // Determine tenant from the request domain
+        $tenantDomain = $request->header('X-Tenant-Domain') ?? $request->input('tenant_domain');
+
+        if (!$tenantDomain) {
+            abort(400, 'Tenant not specified');
+        }
+
+        $tenant = Tenant::where('domain', $tenantDomain)->first();
+        if (!$tenant) {
+            return response()->json(['error' => 'Tenant not found for this domain'], 404);
+        }
+
+        // Validate incoming data
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|unique:users',
@@ -21,113 +39,138 @@ class AuthController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
+        // Create user assigned to the tenant
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'name'       => $request->name,
+            'email'      => $request->email,
+            'password'   => bcrypt($request->password),
+            'tenant_id'  => $tenant->id,
         ]);
 
-        // Assign default role "user"
-        $user->assignRole('user');
-
-        // Load roles for frontend
+        // Assign default "user" role
+        $user->assignRole('tenant-user');
         $user->load('roles');
 
-        // Issue JWT token immediately
-        $token = auth('api')->login($user); // Use your JWT guard
+        // Issue a JWT token with tenant_id claim
+        $token = auth('api')
+            ->claims(['tenant_id' => $tenant->id, 'roles' => $user->getRoleNames()])
+            ->login($user);
 
         return response()->json([
-            'user' => $user,
-            'access_token' => $token,
-            'roles' => $user->getRoleNames(), // ['user'] or ['admin']
-            'message' => 'User registered successfully'
+            'message'       => 'User registered successfully',
+            'access_token'  => $token,
+            'token_type'    => 'bearer',
+            'user'          => $user,
+            'roles'         => $user->getRoleNames(),
         ], 200);
     }
 
+    /**
+     * User login
+     */
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
-
         $user = User::where('email', $credentials['email'])->first();
 
         if (!$token = auth('api')->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Invalid credentials'], 401);
         }
 
-        // Load roles for frontend
+        // Add tenant_id and roles in JWT claims
+        $token = auth('api')
+            ->claims([
+                'tenant_id' => $user->tenant_id,
+                'roles' => $user->getRoleNames(),
+            ])
+            ->login($user);
+
         $user->load('roles');
 
         return response()->json([
             'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth('api')->factory()->getTTL() * 60,
-            'user' => $user,
-            'roles' => $user->getRoleNames(), // send role names to frontend
+            'token_type'   => 'bearer',
+            'expires_in'   => auth('api')->factory()->getTTL() * 60,
+            'user'         => $user,
+            'roles'        => $user->getRoleNames(),
         ], 200);
     }
 
+    /**
+     * Get currently authenticated user
+     */
     public function me()
     {
         $user = auth('api')->user();
         $user->load('roles');
+
         return response()->json([
-            'user' => $user,
+            'user'  => $user,
             'roles' => $user->getRoleNames(),
         ]);
     }
 
+    /**
+     * Logout current user (invalidate token)
+     */
     public function logout()
     {
         auth('api')->logout();
         return response()->json(['message' => 'Successfully logged out']);
     }
 
+    /**
+     * Refresh JWT token
+     */
     public function refresh()
     {
-        return $this->respondWithToken(auth('api')->refresh());
+        $newToken = auth('api')->refresh();
+        return $this->respondWithToken($newToken);
     }
-    
-    
+
     /**
-     * List all users (Admin only)
+     * List users (tenant admin or super-admin only)
      */
     public function listUsers(Request $request)
     {
-        $currentUserId = auth('api')->id();
+        $currentUser = auth('api')->user();
 
-        // Get pagination params, default page=1, pageSize=10
+        // Tenant scope: super-admin sees all, others see within tenant
+        $query = User::query()->with('roles');
+        if (!$currentUser->hasRole('super-admin')) {
+            $query->where('tenant_id', $currentUser->tenant_id);
+        }
+
+        // Optional: exclude current user
+        $query->where('id', '!=', $currentUser->id);
+
+        // Pagination
         $page = (int) $request->query('page', 1);
         $pageSize = (int) $request->query('pageSize', 10);
-
-        // Query users, exclude current user
-        $query = User::where('id', '!=', $currentUserId)->with('roles');
-
         $total = $query->count();
 
-        $users = $query
-            ->skip(($page - 1) * $pageSize)
-            ->take($pageSize)
-            ->get();
+        $users = $query->skip(($page - 1) * $pageSize)->take($pageSize)->get();
 
-        // Format roles as array of names
         $users = $users->map(function ($user) {
             return [
-                'id' => $user->id,
-                'name' => $user->name,
+                'id'    => $user->id,
+                'name'  => $user->name,
                 'email' => $user->email,
                 'roles' => $user->getRoleNames(),
             ];
         });
 
         return response()->json([
-            'data' => $users, // frontend expects 'data' key
-            'total' => $total,
-            'page' => $page,
+            'data'     => $users,
+            'total'    => $total,
+            'page'     => $page,
             'pageSize' => $pageSize,
         ]);
     }
 
-
+    /**
+     * Helper: uniform JWT response
+     */
     protected function respondWithToken($token)
     {
         $user = auth('api')->user();
@@ -135,10 +178,10 @@ class AuthController extends Controller
 
         return response()->json([
             'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth('api')->factory()->getTTL() * 60,
-            'user' => $user,
-            'roles' => $user->getRoleNames(),
+            'token_type'   => 'bearer',
+            'expires_in'   => auth('api')->factory()->getTTL() * 60,
+            'user'         => $user,
+            'roles'        => $user->getRoleNames(),
         ], 200);
     }
 }

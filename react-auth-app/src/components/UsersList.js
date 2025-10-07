@@ -14,7 +14,7 @@ export default function UsersList() {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      if (!user?.roles?.includes("admin")) {
+      if (!user?.roles?.includes("tenant-admin")) {
         setError("Unauthorized: Admins only");
         setLoading(false);
         return;
