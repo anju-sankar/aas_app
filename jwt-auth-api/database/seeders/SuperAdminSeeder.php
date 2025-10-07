@@ -15,11 +15,11 @@ class SuperAdminSeeder extends Seeder
         Role::firstOrCreate(['name' => 'super-admin']);
 
         // Check if a super admin already exists
-        if (!User::where('email', 'superadmin@example.com')->exists()) {
+        if (!User::where('email', 'superadmin@aas.com')->exists()) {
             User::create([
                 'name' => 'Super Admin',
                 'email' => 'superadmin@example.com',
-                'password' => Hash::make('password123'), // Change to secure password
+                'password' => Hash::make('superadmin123'), // Change to secure password
             ])->assignRole('super-admin');
 
             $this->command->info('Super Admin created: superadmin@example.com / password123');
