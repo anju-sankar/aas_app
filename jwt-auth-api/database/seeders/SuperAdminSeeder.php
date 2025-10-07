@@ -18,11 +18,11 @@ class SuperAdminSeeder extends Seeder
         if (!User::where('email', 'superadmin@aas.com')->exists()) {
             User::create([
                 'name' => 'Super Admin',
-                'email' => 'superadmin@example.com',
+                'email' => 'superadmin@aas.com',
                 'password' => Hash::make('superadmin123'), // Change to secure password
             ])->assignRole('super-admin');
 
-            $this->command->info('Super Admin created: superadmin@example.com / password123');
+            $this->command->info('Super Admin created: superadmin@aas.com / superadmin123');
         } else {
             $this->command->info('Super Admin already exists.');
         }
