@@ -62,14 +62,14 @@ export default function AnalyticsChart() {
       position: "relative"
     }}>
       <h2 style={{
-        fontSize: "1.5rem",
+        fontSize: "1.25rem", // reduced from 1.5rem
         fontWeight: 700,
         marginBottom: 8,
         color: "#222"
       }}>
         <span role="img" aria-label="chart">📈</span> User Visits Analytics
       </h2>
-      <p style={{ color: "#666", marginBottom: 16 }}>
+      <p style={{ color: "#666", marginBottom: 16, fontSize: "0.95rem" }}>
         {user?.role === "admin"
           ? "Overview of user visits for all users in the last 7 days."
           : "Your visits in the last 7 days."}
@@ -78,8 +78,8 @@ export default function AnalyticsChart() {
         <ResponsiveContainer width="100%" height={280}>
           <LineChart data={data}>
             <CartesianGrid stroke="#e0e0e0" strokeDasharray="3 3" />
-            <XAxis dataKey="date" tick={{ fontSize: 13 }} />
-            <YAxis tick={{ fontSize: 13 }} />
+            <XAxis dataKey="date" tick={{ fontSize: 12 }} />
+            <YAxis tick={{ fontSize: 12 }} />
             <Tooltip
               contentStyle={{ background: "#fff", borderRadius: 8, boxShadow: "0 2px 8px rgba(0,0,0,0.07)" }}
               labelStyle={{ fontWeight: 600 }}
