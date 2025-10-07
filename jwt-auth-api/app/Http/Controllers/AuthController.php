@@ -91,13 +91,23 @@ class AuthController extends Controller
     /**
      * List all users (Admin only)
      */
-    public function listUsers()
+    public function listUsers(Request $request)
     {
-        $currentUserId = auth('api')->id(); // get the current logged-in user ID
+        $currentUserId = auth('api')->id();
 
-        $users = User::where('id', '!=', $currentUserId) // exclude current user
-        ->with('roles') // eager load roles
-        ->get(); // eager load roles
+        // Get pagination params, default page=1, pageSize=10
+        $page = (int) $request->query('page', 1);
+        $pageSize = (int) $request->query('pageSize', 10);
+
+        // Query users, exclude current user
+        $query = User::where('id', '!=', $currentUserId)->with('roles');
+
+        $total = $query->count();
+
+        $users = $query
+            ->skip(($page - 1) * $pageSize)
+            ->take($pageSize)
+            ->get();
 
         // Format roles as array of names
         $users = $users->map(function ($user) {
@@ -105,11 +115,16 @@ class AuthController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'roles' => $user->getRoleNames(), // returns ['admin'] or ['user']
+                'roles' => $user->getRoleNames(),
             ];
         });
 
-        return response()->json($users);
+        return response()->json([
+            'data' => $users, // frontend expects 'data' key
+            'total' => $total,
+            'page' => $page,
+            'pageSize' => $pageSize,
+        ]);
     }
 
 

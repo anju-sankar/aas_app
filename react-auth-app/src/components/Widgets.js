@@ -4,7 +4,7 @@ export default function Widgets({ stats }) {
       {stats.map((stat) => (
         <div key={stat.title} className="bg-white p-4 rounded shadow hover:shadow-lg transition">
           <h3 className="text-gray-500">{stat.title}</h3>
-          <p className="text-2xl font-bold">{stat.value}</p>
+          <p className="text-xl font-bold">{stat.value}</p>
         </div>
       ))}
     </div>

@@ -27,7 +27,7 @@ export default function LoginForm() {
         <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-white rounded-full shadow-lg p-3">
           <svg width="32" height="32" fill="none" viewBox="0 0 24 24"><path fill="#6366f1" d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
         </div>
-        <h2 className="text-3xl font-extrabold mb-2 text-center text-gray-800 tracking-tight">Sign In</h2>
+  <h2 className="text-2xl font-extrabold mb-2 text-center text-gray-800 tracking-tight">Sign In</h2>
         <p className="text-center text-gray-500 mb-6 text-sm">Welcome back! Please login to your account.</p>
         {error && <p className="text-red-500 mb-3 text-center font-medium">{error}</p>}
 

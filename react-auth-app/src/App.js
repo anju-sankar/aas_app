@@ -3,7 +3,8 @@ import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
 import Dashboard from "./components/Dashboard";
 import DashboardLayout from "./components/DashboardLayout";
-import UsersList from "./components/UsersList"; // import your new component
+import UsersList from "./components/UsersList";
+import AnalyticsChart from "./components/AnalyticsChart";
 import OAuthSuccess from "./components/OAuthSuccess";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import { useContext } from "react";
@@ -28,16 +29,29 @@ function App() {
           }
         />
 
+
+        {/* Analytics route */}
+        <Route
+          path="/dashboard/analytics"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <AnalyticsChart />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+
         {/* Admin-only Users route */}
         <Route
           path="/dashboard/users"
           element={
             <ProtectedRoute>
               {user?.roles?.includes("admin") ? (
-        <DashboardLayout>
-          <UsersList />
-        </DashboardLayout>
-      ) : <Navigate to="/dashboard" />}
+                <DashboardLayout>
+                  <UsersList />
+                </DashboardLayout>
+              ) : <Navigate to="/dashboard" />}
             </ProtectedRoute>
           }
         />

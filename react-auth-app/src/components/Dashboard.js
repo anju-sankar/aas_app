@@ -1,12 +1,13 @@
 
 import DashboardLayout from "./DashboardLayout";
-import AnalyticsChart from "./AnalyticsChart";
+
+import Profile from "./Profile";
 
 export default function Dashboard() {
 
   return (
-      <DashboardLayout>
-          <AnalyticsChart/>
-      </DashboardLayout >
+    <DashboardLayout>
+        <Profile />
+    </DashboardLayout>
   );
 }

@@ -19,5 +19,9 @@ export default function OAuthSuccess() {
     handleOAuth();
   }, [token]);
 
-  return <p>Signing you in...</p>;
+  return (
+    <div className="flex justify-center items-center h-40">
+      <span className="text-gray-500 text-lg animate-pulse">Signing you in...</span>
+    </div>
+  );
 }
