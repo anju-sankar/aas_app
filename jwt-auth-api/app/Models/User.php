@@ -35,4 +35,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];  // you may add custom claims like roles etc
     }
+    
+    public function tenant()
+    {
+        return $this->belongsTo(Tenant::class);
+    }
 }

@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
         RolesAndPermissionsSeeder::class,
         UserVisitsSeeder::class,
         // other seeders
+        SuperAdminSeeder::class,
     ]);
 }
 
