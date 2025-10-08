@@ -69,8 +69,9 @@ export default function AnalyticsChart() {
       }}>
         <span role="img" aria-label="chart">📈</span> User Visits Analytics
       </h2>
+
       <p style={{ color: "#666", marginBottom: 16, fontSize: "0.95rem" }}>
-        {user?.role === "tenant-admin"
+        {user?.roles?.join(", ") === "tenant-admin"
           ? "Overview of user visits for all users in the last 7 days."
           : "Your visits in the last 7 days."}
       </p>
