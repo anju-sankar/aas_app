@@ -23,12 +23,21 @@ export default function LoginForm() {
 
   return (
    <div className="flex flex-col justify-center items-center min-h-screen px-4 bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100">
-  <form className="bg-white border border-gray-200 p-6 md:p-8 rounded-2xl shadow-xl w-full max-w-md relative">
-    <div className="absolute -top-4 md:-top-6 left-1/2 -translate-x-1/2 bg-white rounded-full shadow-lg p-3">
-      <svg width="30" height="30" fill="none" viewBox="0 0 24 24">
-        <path fill="#6366f1" d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-      </svg>
-    </div>
+    <form className="bg-white border border-gray-200 p-6 md:p-8 rounded-2xl shadow-xl w-full max-w-md relative">
+      <div className="absolute -top-4 md:-top-6 left-1/2 -translate-x-1/2 bg-white rounded-full shadow-lg p-3 md:p-4">
+        <svg
+          width="30"
+          height="30"
+          fill="none"
+          viewBox="0 0 24 24"
+          className="md:w-8 md:h-8 w-7 h-7"
+        >
+          <path
+            fill="#6366f1"
+            d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+          />
+        </svg>
+      </div>
 
         <h2 className="text-2xl font-extrabold mb-2 text-center text-gray-800 tracking-tight">Sign In</h2>
         <p className="text-center text-gray-500 mb-6 text-sm">
