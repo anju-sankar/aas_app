@@ -70,12 +70,13 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
-        $user = User::where('email', $credentials['email'])->first();
+        $credentials = $request->only('email', 'password');        
 
         if (!$token = auth('api')->attempt($credentials)) {
             return response()->json(['error' => 'Invalid credentials'], 401);
         }
+        
+        $user = auth('api')->user();
 
         // Add tenant_id and roles in JWT claims
         $token = auth('api')

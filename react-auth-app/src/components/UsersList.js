@@ -1,5 +1,4 @@
 import { useEffect, useState, useContext } from "react";
-import React from "react";
 import api from "../api";
 import { AuthContext } from "../context/AuthContext";
 
@@ -13,6 +12,7 @@ export default function UsersList() {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
     const fetchUsers = async () => {
       if (!user?.roles?.includes("tenant-admin")) {
         setError("Unauthorized: Admins only");
@@ -22,7 +22,9 @@ export default function UsersList() {
 
       setLoading(true);
       try {
-        const res = await api.get(`/users?page=${page}&pageSize=${pageSize}`); // backend should support pagination
+        const res = await api.get(`/users?page=${page}&pageSize=${pageSize}`,{
+          headers: { Authorization: `Bearer ${token}` },        
+        }); // backend should support pagination
         console.log('API response:', res.data); // Debug response
         setUsers(res.data.data || []); // expects { data: [...], total: ... }
         setTotal(res.data.total || 0);
